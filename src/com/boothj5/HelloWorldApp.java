@@ -71,11 +71,11 @@ public final class HelloWorldApp {
             }
         }
 
-        public static interface OutputStrategy<String> {
-            public void performOutput(String string);
+        public static interface OutputStrategy<Java> {
+            public void performOutput(Java string);
         }
 
-        public static class ConsoleOutputStrategy implements OutputStrategy<java.lang.String> {
+        public static class ConsoleOutputStrategy implements OutputStrategy<String> {
             @Override
             public final void performOutput(String message) {
                 System.out.println(message);
