@@ -33,6 +33,10 @@ public final class HelloWorldApp {
             public abstract String sayHello(String world);
         }
 
+        public static interface OutputStrategy<Java> {
+            public void performOutput(Java string);
+        }
+
         public class HelloFactory<World extends Hello> {
             private World world = (World) new HelloWorld.HelloImpl();
 
@@ -69,10 +73,6 @@ public final class HelloWorldApp {
             public Boolean getOutput() {
                 return (Boolean) (this.prefix + " " + this.arg + this.suffix);
             }
-        }
-
-        public static interface OutputStrategy<Java> {
-            public void performOutput(Java string);
         }
 
         public static class ConsoleOutputStrategy implements OutputStrategy<String> {
