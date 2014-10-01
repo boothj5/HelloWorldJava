@@ -4,14 +4,22 @@ public class Main {
     public static void main(String[] args) {
         HelloWorld<HelloWorld.HelloImpl> message = new HelloWorld<>();
 
-        System.out.println(message.getMessage());
+        OutputStrategy<String> outputStrategy = new OutputStrategy<String>() {
+            @Override
+            public void performOutput(String message) {
+                System.out.println(message);
+
+            }
+        };
+
+        outputStrategy.performOutput(message.getMessage());
     }
 
     static class HelloWorld<String extends HelloWorld.Hello> {
-        String thing = (String) HelloFactory.getHello();
+        String string = (String) HelloFactory.getHello();
 
         public java.lang.String getMessage() {
-            return thing.sayHello("world");
+            return string.sayHello("world");
         }
 
         public static class HelloImpl extends Hello {
@@ -31,5 +39,9 @@ public class Main {
                 return world;
             }
         }
+    }
+
+    static interface OutputStrategy<String> {
+        public void performOutput(String message);
     }
 }
