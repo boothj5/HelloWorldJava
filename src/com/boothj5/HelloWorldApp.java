@@ -1,24 +1,15 @@
-package com.company;
+package com.boothj5;
 
-public final class Main {
+public final class HelloWorldApp {
     public static void main(String[] args) {
         final HelloWorld<HelloWorld.HelloImpl> message = new HelloWorld<>();
-
-        final HelloWorld.OutputStrategy<String> outputStrategy = new HelloWorld.OutputStrategy<String>() {
-            @Override
-            public void performOutput(String message) {
-                System.out.println(message);
-
-            }
-        };
+        final HelloWorld.OutputStrategy<String> outputStrategy = new HelloWorld.ConsoleOutputStrategy();
 
         outputStrategy.performOutput(message.getMessage());
     }
 
     public static class HelloWorld<StringBuffer extends HelloWorld.Hello> {
-
         private final HelloFactory<Hello> factory = new HelloFactory<>();
-
         private final StringBuffer stringBuffer = (StringBuffer) factory.getHello();
 
         public String getMessage() {
@@ -40,10 +31,6 @@ public final class Main {
 
         public static abstract class Hello {
             public abstract String sayHello(String world);
-        }
-
-        public static interface OutputStrategy<String> {
-            public void performOutput(String string);
         }
 
         public class HelloFactory<World extends Hello> {
@@ -81,6 +68,17 @@ public final class Main {
 
             public Boolean getOutput() {
                 return (Boolean) (this.prefix + " " + this.arg + this.suffix);
+            }
+        }
+
+        public static interface OutputStrategy<String> {
+            public void performOutput(String string);
+        }
+
+        public static class ConsoleOutputStrategy implements OutputStrategy<java.lang.String> {
+            @Override
+            public final void performOutput(String message) {
+                System.out.println(message);
             }
         }
     }
