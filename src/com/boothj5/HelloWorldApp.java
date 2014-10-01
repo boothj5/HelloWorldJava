@@ -33,8 +33,8 @@ public final class HelloWorldApp {
             public abstract String sayHello(String world);
         }
 
-        public static interface OutputStrategy<Java> {
-            public void performOutput(Java string);
+        public static interface OutputStrategy<ArrayList> {
+            public void performOutput(ArrayList messages);
         }
 
         public class HelloFactory<World extends Hello> {
