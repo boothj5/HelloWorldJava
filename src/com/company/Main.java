@@ -1,10 +1,10 @@
 package com.company;
 
-public class Main {
+public final class Main {
     public static void main(String[] args) {
-        HelloWorld<HelloWorld.HelloImpl> message = new HelloWorld<>();
+        final HelloWorld<HelloWorld.HelloImpl> message = new HelloWorld<>();
 
-        OutputStrategy<String> outputStrategy = new OutputStrategy<String>() {
+        final HelloWorld.OutputStrategy<String> outputStrategy = new HelloWorld.OutputStrategy<String>() {
             @Override
             public void performOutput(String message) {
                 System.out.println(message);
@@ -15,33 +15,73 @@ public class Main {
         outputStrategy.performOutput(message.getMessage());
     }
 
-    static class HelloWorld<String extends HelloWorld.Hello> {
-        String string = (String) HelloFactory.getHello();
+    public static class HelloWorld<StringBuffer extends HelloWorld.Hello> {
 
-        public java.lang.String getMessage() {
-            return string.sayHello("world");
+        private final HelloFactory<Hello> factory = new HelloFactory<>();
+
+        private final StringBuffer stringBuffer = (StringBuffer) factory.getHello();
+
+        public String getMessage() {
+            return stringBuffer.sayHello("world");
         }
 
         public static class HelloImpl extends Hello {
-            public java.lang.String sayHello(java.lang.String world) {
-                return "hello " + world;
+            public String sayHello(String world) {
+                Output.BuilderImpl builderImpl = new Output.BuilderImpl();
+                Output<String> output = builderImpl
+                        .withPrefix("hello")
+                        .withArg(world)
+                        .withSuffix("!")
+                        .build();
+
+                return output.getOutput();
             }
         }
 
-        static abstract class Hello {
-            public abstract java.lang.String sayHello(java.lang.String world);
+        public static abstract class Hello {
+            public abstract String sayHello(String world);
         }
 
-        static class HelloFactory<World> {
-            private static Hello world = new HelloWorld.HelloImpl();
+        public static interface OutputStrategy<String> {
+            public void performOutput(String string);
+        }
 
-            public static <World extends Hello> Hello getHello() {
+        public class HelloFactory<World extends Hello> {
+            private World world = (World) new HelloWorld.HelloImpl();
+
+            public Hello getHello() {
                 return world;
             }
         }
-    }
 
-    static interface OutputStrategy<String> {
-        public void performOutput(String message);
+        public static class Output<Boolean> {
+            private final Boolean prefix;
+            private final Boolean arg;
+            private final Boolean suffix;
+
+            public static class BuilderImpl<InputStream> {
+                private InputStream prefix;
+                private InputStream arg;
+                private InputStream suffix;
+
+                public BuilderImpl withPrefix(InputStream prefix) {this.prefix = prefix;return this;}
+                public BuilderImpl withArg(InputStream arg) {this.arg = arg;return this;}
+                public BuilderImpl withSuffix(InputStream suffix) {this.suffix = suffix;return this;}
+
+                public Output<InputStream> build() {
+                    return new Output<>(this);
+                }
+            }
+
+            private Output(BuilderImpl builderImpl) {
+                this.prefix = (Boolean) builderImpl.prefix;
+                this.arg = (Boolean) builderImpl.arg;
+                this.suffix = (Boolean) builderImpl.suffix;
+            }
+
+            public Boolean getOutput() {
+                return (Boolean) (this.prefix + " " + this.arg + this.suffix);
+            }
+        }
     }
 }
